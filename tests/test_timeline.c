@@ -7,6 +7,9 @@ void tearDown(void) {}
 void test_timeline_init() {
     Timeline t;
     TEST_ASSERT_FALSE(init_timeline(&t));
+    TEST_ASSERT(t.length == 0);
+    TEST_ASSERT(t.first_unwritten == 0);
+    TEST_ASSERT(t.events);
     destroy_timeline(&t);
 }
 
@@ -18,6 +21,7 @@ void test_timeline_append_1() {
         append_event_to_timeline(&t, 0, 0)
     );
 
+    TEST_ASSERT(t.length == 1);
     TEST_ASSERT(t.events[0].path == 0 && t.events[0].type == 0);
 
     destroy_timeline(&t);
@@ -36,6 +40,22 @@ void test_timeline_append_2() {
         );
     }
 
+    TEST_ASSERT(t.allocated > 5000);
+    TEST_ASSERT(t.length == 5001);
+
+    destroy_timeline(&t);
+}
+
+void test_timeline_write_to_disk_1() {
+    Timeline t;
+    TEST_ASSERT_FALSE(init_timeline(&t));
+
+    for (int i = 0; i != 5001; ++i) {
+        append_event_to_timeline(&t, 0, 0);
+    }
+
+    TEST_ASSERT_FALSE(write_timeline_to_disk(&t));
+    TEST_ASSERT(t.first_unwritten == 5001);
 
     destroy_timeline(&t);
 }
@@ -45,5 +65,6 @@ int main() {
     RUN_TEST(test_timeline_init);
     RUN_TEST(test_timeline_append_1);
     RUN_TEST(test_timeline_append_2);
+    RUN_TEST(test_timeline_write_to_disk_1);
     return UNITY_END();
 }
