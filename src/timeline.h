@@ -11,6 +11,9 @@ typedef struct WebEvent {
 
 typedef struct Timeline {
     WebEvent* events;
-    uint32_t alloced;
+    uint32_t allocated;
     uint32_t length;
 } Timeline;
+
+int init_timeline(Timeline*);
+void destroy_timeline(Timeline*);
