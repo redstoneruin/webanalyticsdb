@@ -10,13 +10,14 @@ typedef struct WebEvent {
 } WebEvent;
 
 typedef struct Timeline {
+    uint32_t id;
     WebEvent* events;
     uint32_t allocated;
     uint32_t length;
     uint32_t first_unwritten;
 } Timeline;
 
-int init_timeline(Timeline*);
+int init_timeline(Timeline*, uint32_t);
 int append_event_to_timeline(Timeline*, uint32_t, uint32_t);
 int write_timeline_to_disk(Timeline*);
 void destroy_timeline(Timeline*);

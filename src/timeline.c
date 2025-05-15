@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 
 #define DEFAULT_TIMELINE_SIZE 1000
+#define TIMELINE_FILE_FMT "data/timeline_%u.dat"
 
 
 int expand_timeline(Timeline* t) {
@@ -19,12 +20,13 @@ int expand_timeline(Timeline* t) {
     return 0;
 }
 
-int init_timeline(Timeline* t) {
+int init_timeline(Timeline* t, uint32_t id) {
     t->events = (WebEvent*)malloc(DEFAULT_TIMELINE_SIZE * sizeof(WebEvent));
     if (!t->events) { return 1; }
     t->allocated = DEFAULT_TIMELINE_SIZE;
     t->length = 0;
     t->first_unwritten = 0;
+    t->id = id;
     return 0;
 }
 
@@ -48,7 +50,9 @@ int write_timeline_to_disk(Timeline* t) {
     }
 
     mkdir("data", S_IRWXU);
-    FILE* f = fopen("data/timeline.dat", "a"); // placeholder name
+    char filename[128];
+    int err = sprintf(filename, TIMELINE_FILE_FMT, t->id);
+    FILE* f = fopen(filename, "a"); // placeholder name
     if (!f) { return 1; }
 
     size_t written = fwrite(t->events, sizeof(WebEvent), num_to_write, f);

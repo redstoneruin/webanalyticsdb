@@ -6,7 +6,7 @@ void tearDown(void) {}
 
 void test_timeline_init() {
     Timeline t;
-    TEST_ASSERT_FALSE(init_timeline(&t));
+    TEST_ASSERT_FALSE(init_timeline(&t, 0));
     TEST_ASSERT(t.length == 0);
     TEST_ASSERT(t.first_unwritten == 0);
     TEST_ASSERT(t.events);
@@ -15,7 +15,7 @@ void test_timeline_init() {
 
 void test_timeline_append_1() {
     Timeline t;
-    TEST_ASSERT_FALSE(init_timeline(&t));
+    TEST_ASSERT_FALSE(init_timeline(&t, 0));
 
     TEST_ASSERT_FALSE(
         append_event_to_timeline(&t, 0, 0)
@@ -29,7 +29,7 @@ void test_timeline_append_1() {
 
 void test_timeline_append_2() {
     Timeline t;
-    TEST_ASSERT_FALSE(init_timeline(&t));
+    TEST_ASSERT_FALSE(init_timeline(&t, 0));
 
     for (int i = 0; i != 5001; ++i) {
         TEST_ASSERT_FALSE(
@@ -48,7 +48,7 @@ void test_timeline_append_2() {
 
 void test_timeline_write_to_disk_1() {
     Timeline t;
-    TEST_ASSERT_FALSE(init_timeline(&t));
+    TEST_ASSERT_FALSE(init_timeline(&t, 0));
 
     for (int i = 0; i != 5001; ++i) {
         append_event_to_timeline(&t, 0, 0);
