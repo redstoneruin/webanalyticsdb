@@ -20,4 +20,5 @@ typedef struct Timeline {
 int init_timeline(Timeline*, uint32_t);
 int append_event_to_timeline(Timeline*, uint32_t, uint32_t);
 int write_timeline_to_disk(Timeline*);
+int read_timeline_from_disk(Timeline*);
 void destroy_timeline(Timeline*);

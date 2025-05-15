@@ -1,5 +1,6 @@
 #include "timeline.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -52,15 +53,53 @@ int write_timeline_to_disk(Timeline* t) {
     mkdir("data", S_IRWXU);
     char filename[128];
     int err = sprintf(filename, TIMELINE_FILE_FMT, t->id);
+    if (err < 0) { return 1; }
     FILE* f = fopen(filename, "a"); // placeholder name
     if (!f) { return 1; }
 
     size_t written = fwrite(t->events, sizeof(WebEvent), num_to_write, f);
     if (written != num_to_write) {
+        fclose(f);
         return 1;
     }
 
     t->first_unwritten = t->length;
+
+    fclose(f);
+    return 0;
+}
+
+int read_timeline_from_disk(Timeline* t) {
+    char filename[128];
+    int err = sprintf(filename, TIMELINE_FILE_FMT, t->id);
+    if (err < 0) { return 1; }
+
+    struct stat sb;
+    err = stat(filename, &sb);
+    if (err) {
+        return 1;
+    }
+
+    off_t filesize = sb.st_size;
+    uint32_t timeline_size = filesize / sizeof(WebEvent);
+
+    t->allocated = timeline_size + DEFAULT_TIMELINE_SIZE;
+    t->length = timeline_size;
+    t->first_unwritten = t->length;
+    // assume events is unallocated
+    t->events = (WebEvent*)malloc(t->allocated*sizeof(WebEvent));
+
+    FILE* f = fopen(filename, "r"); // placeholder name
+    if (!f) {
+        fclose(f);
+        return 1;
+    }
+
+    uint32_t bytes_read = fread(t->events, sizeof(WebEvent), t->length, f);
+    if (bytes_read != t->length) {
+        fclose(f);
+        return 1;
+    }
 
     fclose(f);
     return 0;
