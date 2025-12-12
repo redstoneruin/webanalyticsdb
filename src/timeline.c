@@ -11,7 +11,10 @@
 
 timestamp_ms get_current_time_ms(void) {
     struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
+    if (clock_gettime(CLOCK_REALTIME, &ts) != 0) {
+        // Fallback to time() if clock_gettime fails
+        return (timestamp_ms)time(NULL) * 1000;
+    }
     return (timestamp_ms)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
