@@ -9,6 +9,12 @@
 #define DEFAULT_TIMELINE_SIZE 1000
 #define TIMELINE_FILE_FMT "data/timeline_%u.dat"
 
+timestamp_ms get_current_time_ms(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return (timestamp_ms)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+
 
 int expand_timeline(Timeline* t) {
     uint32_t new_allocated = t->allocated * 2;
@@ -36,7 +42,7 @@ int append_event_to_timeline(Timeline* t, uint32_t type, uint32_t path) {
         expand_timeline(t);
     }
     WebEvent* e = &t->events[t->length];
-    e->time = time(0);
+    e->time = get_current_time_ms();
     e->type = type;
     e->path = path;
 

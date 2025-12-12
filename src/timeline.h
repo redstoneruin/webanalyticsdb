@@ -3,8 +3,14 @@
 #include <stdint.h>
 #include <time.h>
 
+// Timestamp in milliseconds since Unix epoch
+typedef int64_t timestamp_ms;
+
+// Get current time in milliseconds
+timestamp_ms get_current_time_ms(void);
+
 typedef struct WebEvent {
-    time_t time;
+    timestamp_ms time;
     uint32_t type;
     uint32_t path;
 } WebEvent;

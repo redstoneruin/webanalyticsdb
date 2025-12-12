@@ -6,4 +6,4 @@
 #define MAX_POS 0xFFFFFFFF
 
 // returns the position of the event with the first time >= the provided time
-uint32_t timeline_search(Timeline, time_t);
+uint32_t timeline_search(Timeline, timestamp_ms);

@@ -2,7 +2,7 @@
 #include "timeline_alg.h"
 
 
-uint32_t timeline_search(Timeline t, time_t timestamp) {
+uint32_t timeline_search(Timeline t, timestamp_ms timestamp) {
     if (t.length == 0) { return MAX_POS; }
 
     uint32_t lo = 0;
